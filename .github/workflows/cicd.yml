@@ -1,0 +1,82 @@
+name: Voting App Multi-Service CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - name: vote
+            context: ./docker-voting-app/vote
+          - name: result
+            context: ./docker-voting-app/result
+          - name: worker
+            context: ./docker-voting-app/worker
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Convert Repository Name to Lowercase
+        run: echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t ghcr.io/${{ env.REPO_LOWER }}/${{ matrix.service.name }}:${{ github.sha }} \
+            -t ghcr.io/${{ env.REPO_LOWER }}/${{ matrix.service.name }}:latest \
+            ${{ matrix.service.context }}
+
+      - name: DevSecOps Vulnerability Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ghcr.io/${{ env.REPO_LOWER }}/${{ matrix.service.name }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push Tested Images to GHCR
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          docker push ghcr.io/${{ env.REPO_LOWER }}/${{ matrix.service.name }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.REPO_LOWER }}/${{ matrix.service.name }}:latest
+
+  deploy:
+    needs: build-and-scan
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Cloud Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/example-voting-app/docker-voting-app
+            echo "Logging into Registry..."
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            echo "Pulling latest images..."
+            export GITHUB_REPOSITORY=${{ github.repository }}
+            docker compose -f docker-compose.prod.yml pull
+
+            echo "Updating containers..."
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
