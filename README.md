@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🐧 Some-Bash-Projects
+# 🐧 Devops-Projects
 
 **A growing collection of Bash scripts for automating everyday Linux server administration, monitoring, and log analysis tasks.**
 
