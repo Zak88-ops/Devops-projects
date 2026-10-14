@@ -1,47 +1,85 @@
 <div align="center">
 
-# 🐧 Devops-Projects
+# 🚀 DevOps Projects
 
-**A growing collection of Bash scripts for automating everyday Linux server administration, monitoring, and log analysis tasks.**
+**Hands-on DevOps projects: Linux automation, AWS infrastructure (LocalStack), Docker, and CI/CD with GitHub Actions.**
 
+[![CI/CD](https://github.com/Zak88-ops/Devops-projects/actions/workflows/cicd.yml/badge.svg)](https://github.com/Zak88-ops/Devops-projects/actions/workflows/cicd.yml)
 [![Bash](https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnu-bash&logoColor=white)](https://www.gnu.org/software/bash/)
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)](https://www.linux.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+[![AWS](https://img.shields.io/badge/AWS-232F3E?style=flat&logo=amazonaws&logoColor=white)](https://aws.amazon.com/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![roadmap.sh](https://img.shields.io/badge/roadmap.sh-DevOps-blueviolet)](https://roadmap.sh/devops)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Built while following the [roadmap.sh DevOps path](https://roadmap.sh/devops) — one project at a time.
+Built while following the [roadmap.sh DevOps path](https://roadmap.sh/devops), one project at a time.
+Every concept is validated through a working, documented project.
 
 </div>
 
 ---
 
+## 👋 About
+
+I'm a Computer Science student at **ESI Sidi Bel Abbès** building real infrastructure projects in DevOps and Cloud Engineering.
+This repository is my learning log and portfolio: each folder is a self-contained project with its own documentation.
+
+🔗 [LinkedIn](https://www.linkedin.com/in/zakaria-djamel-eddine-benmaidi-6218b1373)
+
+---
+
 ## 📂 Projects
+
+### ☁️ Cloud (AWS)
 
 | Project | Description | Docs |
 |---|---|---|
-| 🖥️ **[server-stats.sh](./server-stats.sh)** | Displays key server health & security stats in one shot — CPU, memory, disk I/O, uptime, top processes — plus automated `fail2ban` setup for SSH brute-force protection. | [roadmap.sh project](https://roadmap.sh/projects/server-stats) |
-| 📊 **[monito/](./monito)** | A simple server monitoring dashboard for tracking live system metrics. | [roadmap.sh project](https://roadmap.sh/projects/simple-monitoring-dashboard) |
-| 🔍 **[nginx-log-analyser/](./nginx-log-analyser)** | Parses Nginx access logs to surface top IPs, top requested paths, status code breakdowns, and basic security threat detection (404 scanners). | [Full README](./nginx-log-analyser/README.md) · [roadmap.sh project](https://roadmap.sh/projects/nginx-log-analyser) |
-| 🐳 **[docker-voting-app/](docker-voting-app)** | Five-service app (Python, Node.js, .NET, Redis, PostgreSQL) deployed with Docker Compose on a cloud server. | [Deployment guide](docker-voting-app/DEPLOYMENT.md) |
+| 🌐 **[aws-custom-vpc/](./aws-custom-vpc)** | Custom VPC with public/private subnets, route tables, and an Internet Gateway, built and tested on LocalStack. | [README](./aws-custom-vpc/README.md) |
+| 🔐 **[iam-fundamentals/](./iam-fundamentals)** | IAM Users, Groups, Policies, and Roles structured around least privilege, built on LocalStack. | [README](./iam-fundamentals/README.md) |
+
+### 🐳 Containers & CI/CD
+
+| Project | Description | Docs |
+|---|---|---|
+| 🗳️ **[docker-voting-app/](./docker-voting-app)** | Five-service app (Python, Node.js, .NET, Redis, PostgreSQL) deployed with Docker Compose on a cloud server. Images are built and published through a GitHub Actions pipeline. | [Deployment guide](./docker-voting-app/DEPLOYMENT.md) |
+| ⚙️ **[.github/workflows/](./.github/workflows)** | CI/CD pipeline: builds the service images and publishes them to GitHub Container Registry. | [cicd.yml](./.github/workflows/cicd.yml) |
+
+### 🐧 Linux & Automation
+
+| Project | Description | Docs |
+|---|---|---|
+| 🖥️ **[server-stats.sh](./server-stats.sh)** | Server health and security stats in one shot (CPU, memory, disk I/O, uptime, top processes) plus automated `fail2ban` setup. | [roadmap.sh project](https://roadmap.sh/projects/server-stats) |
+| 📊 **[monitoring/](./monitoring)** | A lightweight dashboard for tracking live server metrics. | [roadmap.sh project](https://roadmap.sh/projects/simple-monitoring-dashboard) |
+| 🔍 **[nginx-log-analyser/](./nginx-log-analyser)** | Parses Nginx access logs: top IPs, top paths, status codes, and basic 404 scanner detection. | [README](./nginx-log-analyser/README.md) · [roadmap.sh project](https://roadmap.sh/projects/nginx-log-analyser) |
+| 🛡️ **[file-integrity-checker/](./file-integrity-checker)** | Detects unauthorized file changes on a system. | [roadmap.sh project](https://roadmap.sh/projects/file-integrity-checker) |
+
+---
+
+## 🛠️ Tech Stack
+
+| Area | Tools |
+|---|---|
+| **OS & Scripting** | Linux, Bash, cron |
+| **Containers** | Docker, Docker Compose |
+| **CI/CD** | GitHub Actions, GitHub Container Registry |
+| **Cloud** | AWS (VPC, IAM), LocalStack |
+| **Web & Security** | Nginx, fail2ban |
+
 ---
 
 ## 🖥️ server-stats.sh
 
 Displays key server health and security stats in one shot:
 
-- OS info
-- Logged in users
-- System uptime
-- Disk I/O stats
-- CPU usage
-- Memory usage
-- Top processes by CPU usage
-- Top processes by memory usage
-- Installs, enables, and checks status of `fail2ban` (SSH brute-force protection)
-- Automates recurring checks via **cron** — set it and forget it
+- OS info, logged-in users, and system uptime
+- Disk I/O, CPU, and memory usage
+- Top processes by CPU and by memory
+- Installs, enables, and checks the status of `fail2ban` (SSH brute-force protection)
+- Automates recurring checks via **cron**
 
 ### How fail2ban works here
-It continuously scans log files (like `/var/log/auth.log` for SSH) looking for patterns of failed login attempts. When an IP address exceeds a set number of failures within a time window, `fail2ban` automatically bans that IP — usually by adding a temporary firewall rule that blocks all traffic from it.
+It scans log files (like `/var/log/auth.log` for SSH) for failed login attempts. When an IP exceeds a set number of failures within a time window, `fail2ban` bans it, usually by adding a temporary firewall rule.
 
 ### Requirements
 - `sysstat` (auto-installed by the script if missing)
@@ -52,7 +90,7 @@ It continuously scans log files (like `/var/log/auth.log` for SSH) looking for p
 # Make it executable
 chmod +x server-stats.sh
 
-# (Optional) Run it automatically every day at 8 AM via cron
+# (Optional) Run it every day at 8 AM via cron
 crontab -e
 # add this line, save, and exit:
 0 8 * * * /path/to/server-stats.sh
@@ -61,43 +99,27 @@ crontab -e
 ./server-stats.sh
 ```
 
-> **Note:** some parts of the script use `sudo` (for installing/enabling `fail2ban` and `sysstat`), so you may be prompted for your password.
+> **Note:** parts of the script use `sudo` (installing/enabling `fail2ban` and `sysstat`), so you may be prompted for your password.
 
 **Project reference:** [roadmap.sh/projects/server-stats](https://roadmap.sh/projects/server-stats)
 
 ---
 
-## 📊 monito
+## 🗺️ Roadmap
 
-A lightweight monitoring dashboard project for tracking live server metrics from the command line.
-
-📄 Full documentation: [`monito/README.md`](./monito/README.md)
-
-**Project reference:** [roadmap.sh/projects/simple-monitoring-dashboard](https://roadmap.sh/projects/simple-monitoring-dashboard)
-
----
-
-## 🔍 nginx-log-analyser
-
-A Bash CLI tool that parses Nginx access logs and extracts:
-
-- Top 5 IP addresses with the most requests
-- Top 5 most requested paths
-- Top 5 HTTP response status codes
-- Top 5 IPs generating the most `404` errors (basic scanner/bot detection)
-
-📄 Full documentation: [`nginx-log-analyser/README.md`](./nginx-log-analyser/README.md)
-
-**Project reference:** [roadmap.sh/projects/nginx-log-analyser](https://roadmap.sh/projects/nginx-log-analyser)
-https://roadmap.sh/projects/file-integrity-checker
----
-
-## 🗺️ Roadmap — Upcoming Projects
-
+- [x] Linux & Bash automation (server-stats, monitoring, log analysis)
+- [x] File integrity checker
+- [x] AWS fundamentals on LocalStack (VPC, IAM)
+- [x] Basic Dockerfile
+- [x] Multi-service app with Docker Compose
+- [x] CI/CD pipeline with GitHub Actions
+- [ ] Security scanning in the pipeline (Trivy, Gitleaks)
+- [ ] Terraform: rebuild the VPC as code
+- [ ] Deploy on real AWS (Free Tier, with budget alerts)
 - [ ] Log Archive Tool
 - [ ] SSH Remote Server Setup
-- [ ] Basic Dockerfile
-- [ ] CI/CD pipeline with GitHub Actions
+- [ ] Kubernetes + ArgoCD (GitOps)
+- [ ] Prometheus + Grafana monitoring
 
 Following the full [DevOps roadmap](https://roadmap.sh/devops) project by project.
 
@@ -113,6 +135,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 **Author:** [@Zak88-ops](https://github.com/Zak88-ops)
 
-⭐ If any of these scripts helped you, consider giving the repo a star!
+⭐ If any of these projects helped you, consider giving the repo a star!
 
 </div>
